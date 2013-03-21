@@ -7,12 +7,15 @@ from crunchy_lists.fields import Field, Choice, Link
 
 def parse_func_dict(selfobj, d):
 	"""
-	Calls functions that refer to a view's self, and need to be called from
-	within -- such as getting form kwargs based on request data.
+	Recursively goes through a dict, calling functions that refer to a view's
+	self and therefore need to be called from within -- such as getting extra
+	kwargs for a form constructor based on request data.
 	"""
 	for i in d.keys():
 		if isfunction(d[i]):
 			d[i] = d[i](selfobj)
+		elif isinstance(d[i],dict):
+			d[i] = parse_func_dict(selfobj,d[i])
 	return d
 
 def cbv_factory(modelclass, **kwargs):
@@ -47,6 +50,7 @@ def cbv_factory(modelclass, **kwargs):
 			form_class = _form_class
 		def get_form_kwargs(self, **kwargs):
 			d = super(FactoryFormMixin,self).get_form_kwargs(**kwargs)
+			d.update(parse_func_dict(self, _extra_form_kwargs))
 			return d
 
 	class Detail(FactoryObjectMixin, DetailView):
