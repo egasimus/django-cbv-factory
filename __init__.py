@@ -56,9 +56,12 @@ def cbv_factory(modelclass, **kwargs):
 	class Detail(FactoryObjectMixin, DetailView):
 		template_name = 'detail.html'
 
-	class List(FactoryObjectMixin, CrunchyListView):
+	class List(CrunchyListView):
+		model = modelclass
 		if _field_list:
 			field_list = _field_list
+		if _queryset:
+			queryset = _queryset
 
 	class Create(FactoryFormMixin, FactoryObjectMixin, CreateView):
 		pass
