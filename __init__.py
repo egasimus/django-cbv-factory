@@ -1,8 +1,7 @@
 from inspect import isfunction
-from django.views.generic import View, CreateView, UpdateView, DeleteView, DetailView
+from django.views.generic import View, CreateView, UpdateView, DeleteView, DetailView, ListView
 from django.views.generic.edit import ModelFormMixin
 from django.views.generic.detail import SingleObjectMixin
-from crunchy_lists.views import CrunchyListView
 
 def parse_func_dict(selfobj, d):
 	"""
@@ -19,7 +18,7 @@ def parse_func_dict(selfobj, d):
 
 def cbv_factory(modelclass, **kwargs):
 	"""
-	For a given model, returns generic class-based CrunchyListView, DetailView,
+	For a given model, returns generic class-based ListView, DetailView,
 	CreateView, UpdateView, DeleteView.
 	"""
 	_queryset = kwargs.get('queryset',None)
@@ -55,7 +54,7 @@ def cbv_factory(modelclass, **kwargs):
 	class Detail(FactoryObjectMixin, DetailView):
 		template_name = 'detail.html'
 
-	class List(CrunchyListView):
+	class List(ListView):
 		model = modelclass
 		if _field_list:
 			field_list = _field_list
