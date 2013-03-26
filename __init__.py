@@ -3,7 +3,6 @@ from django.views.generic import View, CreateView, UpdateView, DeleteView, Detai
 from django.views.generic.edit import ModelFormMixin
 from django.views.generic.detail import SingleObjectMixin
 from crunchy_lists.views import CrunchyListView
-from crunchy_lists.fields import Field, Choice, Link
 
 def parse_func_dict(selfobj, d):
 	"""
