@@ -9,12 +9,13 @@ def parse_func_dict(selfobj, d):
 	self and therefore need to be called from within -- such as getting extra
 	kwargs for a form constructor based on request data.
 	"""
-	for i in d.keys():
-		if isfunction(d[i]):
-			d[i] = d[i](selfobj)
+	e = d.copy()
+	for i in e.keys():
+		if isfunction(e[i]):
+			e[i] = e[i](selfobj)
 		elif isinstance(d[i],dict):
-			d[i] = parse_func_dict(selfobj,d[i])
-	return d
+			e[i] = parse_func_dict(selfobj,e[i])
+	return e
 
 def cbv_factory(modelclass, **kwargs):
 	"""
@@ -30,7 +31,7 @@ def cbv_factory(modelclass, **kwargs):
 	_form_template = kwargs.get('form_template',{})
 	_detail_template = kwargs.get('detail_template',{})
 
-	class FactoryObjectMixin(SingleObjectMixin):
+	class FactoryObjectMixin(object):
 		"""
 		Common properties of all views.
 		"""
@@ -59,14 +60,9 @@ def cbv_factory(modelclass, **kwargs):
 		if _detail_template:
 			template_name = _detail_template
 
-	class List(ListView):
-		model = modelclass
+	class List(FactoryObjectMixin, ListView):
 		if _list_template:
 			template_name = _list_template
-		if _field_list:
-			field_list = _field_list
-		if _queryset:
-			queryset = _queryset
 
 	class Create(FactoryFormMixin, FactoryObjectMixin, CreateView):
 		pass
