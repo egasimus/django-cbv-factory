@@ -25,11 +25,15 @@ def cbv_factory(modelclass, **kwargs):
 	_queryset = kwargs.get('queryset',None)
 	_field_list = kwargs.get('field_list',None)
 	_form_class = kwargs.get('form_class',None)
-	_extra_context = kwargs.get('extra_context',{})
 	_extra_form_kwargs = kwargs.get('extra_form_kwargs',{})
-	_list_template = kwargs.get('list_template',{})
-	_form_template = kwargs.get('form_template',{})
-	_detail_template = kwargs.get('detail_template',{})
+
+	_extra_context = kwargs.get('extra_context',{})
+	_list_extra_context = kwargs.get('list_extra_context',{})
+
+	_template = kwargs.get('template',None)
+	_list_template = kwargs.get('list_template',None)
+	_form_template = kwargs.get('form_template',None)
+	_detail_template = kwargs.get('detail_template',None)
 
 	class FactoryObjectMixin(object):
 		"""
@@ -41,6 +45,8 @@ def cbv_factory(modelclass, **kwargs):
 		def get_context_data(self, **kwargs):
 			d = super(FactoryObjectMixin, self).get_context_data(**kwargs)
 			d.update(parse_func_dict(self, _extra_context))
+			if issubclass(type(self), ListView):
+				d.update(parse_func_dict(self, _list_extra_context))
 			return d
 
 	class FactoryFormMixin(ModelFormMixin):
