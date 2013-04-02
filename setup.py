@@ -108,7 +108,7 @@ def find_package_data(where='.', package='',
 
 setup(
     name="django-cbv-factory",
-    version=find_version("multistep_select", "__init__.py"),
+    version=find_version("cbv_factory", "__init__.py"),
     url='',
     license='MIT',
     description="A powerful factory function that outputs a set of customizable Django CBVs for a Model class.",
