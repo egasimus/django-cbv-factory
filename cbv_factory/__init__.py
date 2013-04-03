@@ -43,6 +43,7 @@ def cbv_factory(modelclass, **kwargs):
     _list_template = kwargs.get('list_template', None)
     _form_template = kwargs.get('form_template', None)
     _detail_template = kwargs.get('detail_template', None)
+    _delete_template = kwargs.get('delete_template', None)
 
     class FactoryObjectMixin(object):
         """
@@ -88,7 +89,8 @@ def cbv_factory(modelclass, **kwargs):
         pass
 
     class Delete(FactoryObjectMixin, _delete_class):
-        pass
+        if _delete_template:
+            template_name = _delete_template
 
     return {
         'list': List,
