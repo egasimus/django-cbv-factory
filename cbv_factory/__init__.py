@@ -26,6 +26,13 @@ def cbv_factory(modelclass, **kwargs):
     For a given model, returns generic class-based ListView, DetailView,
     CreateView, UpdateView, DeleteView.
     """
+
+    _create_class = kwargs.get('create_class', CreateView)
+    _update_class = kwargs.get('update_class', UpdateView)
+    _delete_class = kwargs.get('delete_class', DeleteView)
+    _detail_class = kwargs.get('detail_class', DetailView)
+    _list_class = kwargs.get('list_class', ListView)
+
     _queryset = kwargs.get('queryset', None)
     _form_class = kwargs.get('form_class', None)
     _extra_form_kwargs = kwargs.get('extra_form_kwargs', {})
@@ -62,25 +69,25 @@ def cbv_factory(modelclass, **kwargs):
             form_class = _form_class
 
         def get_form_kwargs(self, **kwargs):
-            d = super(FactoryFormMixin,self).get_form_kwargs(**kwargs)
+            d = super(FactoryFormMixin, self).get_form_kwargs(**kwargs)
             d.update(parse_func_dict(self, _extra_form_kwargs))
             return d
 
-    class Detail(FactoryObjectMixin, DetailView):
+    class Detail(FactoryObjectMixin, _detail_class):
         if _detail_template:
             template_name = _detail_template
 
-    class List(FactoryObjectMixin, ListView):
+    class List(FactoryObjectMixin, _list_class):
         if _list_template:
             template_name = _list_template
 
-    class Create(FactoryFormMixin, FactoryObjectMixin, CreateView):
+    class Create(FactoryFormMixin, FactoryObjectMixin, _create_class):
         pass
 
-    class Update(FactoryFormMixin, FactoryObjectMixin, UpdateView):
+    class Update(FactoryFormMixin, FactoryObjectMixin, _update_class):
         pass
 
-    class Delete(FactoryObjectMixin, DeleteView):
+    class Delete(FactoryObjectMixin, _delete_class):
         pass
 
     return {
