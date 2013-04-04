@@ -1,6 +1,9 @@
 __version__ = "0.1"
 
+import warnings
 from inspect import isfunction
+
+from django.conf.urls import patterns, url
 from django.views.generic import \
     CreateView, UpdateView, DeleteView, DetailView, ListView
 from django.views.generic.edit import ModelFormMixin
@@ -99,3 +102,23 @@ def cbv_factory(modelclass, **kwargs):
         'update': Update,
         'delete': Delete
     }
+
+
+def generate_urls(views, view_patterns):
+    """ Generates URL patterns for the manufactured views. """
+    url_patterns = []
+
+    for modelname, modelviews in views.items():
+        for viewname, pattern in view_patterns.items():
+            try:
+                view = modelviews[viewname]
+            except KeyError:
+                warnings.warn('No %s view for %s.' % (viewname, modelname))
+                continue
+            url_patterns += patterns(
+                '',
+                url(pattern % modelname.lower(),
+                    view.as_view() if hasattr(view, 'as_view') else view,
+                    name=('%s_%s') % (modelname.lower(), viewname.lower())))
+
+    return url_patterns
