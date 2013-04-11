@@ -30,45 +30,22 @@ def cbv_factory(modelclass, **kwargs):
     CreateView, UpdateView, DeleteView.
     """
 
-    _create_class = kwargs.get('create_class', CreateView)
-    _update_class = kwargs.get('update_class', UpdateView)
-    _delete_class = kwargs.get('delete_class', DeleteView)
-    _detail_class = kwargs.get('detail_class', DetailView)
-    _list_class = kwargs.get('list_class', ListView)
-
     _queryset = kwargs.get('queryset', None)
     _form_class = kwargs.get('form_class', None)
     _extra_form_kwargs = kwargs.get('extra_form_kwargs', {})
-
     _extra_context = kwargs.get('extra_context', {})
-    _list_extra_context = kwargs.get('list_extra_context', {})
-
-    _list_template = kwargs.get('list_template', None)
-    _form_template = kwargs.get('form_template', None)
-    _detail_template = kwargs.get('detail_template', None)
-    _delete_template = kwargs.get('delete_template', None)
 
     class FactoryObjectMixin(object):
-        """
-        Common properties of all views.
-        """
+        """ Common properties of all views.  """
         model = modelclass
-        if _queryset:
-            queryset = _queryset
 
         def get_context_data(self, **kwargs):
             d = super(FactoryObjectMixin, self).get_context_data(**kwargs)
             d.update(parse_func_dict(self, _extra_context))
-            if issubclass(type(self), ListView):
-                d.update(parse_func_dict(self, _list_extra_context))
             return d
 
     class FactoryFormMixin(ModelFormMixin):
-        """
-        Common properties of form-based views (Create, Update).
-        """
-        if _form_template:
-            template_name = _form_template
+        """ Common properties of form-based views (Create, Update). """
         if _form_class:
             form_class = _form_class
 
@@ -77,23 +54,17 @@ def cbv_factory(modelclass, **kwargs):
             d.update(parse_func_dict(self, _extra_form_kwargs))
             return d
 
-    class Detail(FactoryObjectMixin, _detail_class):
-        if _detail_template:
-            template_name = _detail_template
+    class Detail(FactoryObjectMixin, DetailView): pass
 
-    class List(FactoryObjectMixin, _list_class):
-        if _list_template:
-            template_name = _list_template
+    class List(FactoryObjectMixin, ListView):
+        if _queryset:
+            queryset = _queryset
 
-    class Create(FactoryFormMixin, FactoryObjectMixin, _create_class):
-        pass
+    class Create(FactoryFormMixin, FactoryObjectMixin, CreateView): pass
 
-    class Update(FactoryFormMixin, FactoryObjectMixin, _update_class):
-        pass
+    class Update(FactoryFormMixin, FactoryObjectMixin, UpdateView): pass
 
-    class Delete(FactoryObjectMixin, _delete_class):
-        if _delete_template:
-            template_name = _delete_template
+    class Delete(FactoryObjectMixin, DeleteView): pass
 
     return {
         'list': List,
