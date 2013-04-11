@@ -50,7 +50,7 @@ def cbv_factory(modelclass, **kwargs):
         if _form_class:
             form_class = _form_class
         if _form_template:
-            form_template = _form_template
+            template_name = _form_template
 
         def get_form_kwargs(self, **kwargs):
             d = super(FactoryFormMixin, self).get_form_kwargs(**kwargs)
