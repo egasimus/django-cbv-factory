@@ -34,6 +34,7 @@ def cbv_factory(modelclass, **kwargs):
     _form_class = kwargs.get('form_class', None)
     _extra_form_kwargs = kwargs.get('extra_form_kwargs', {})
     _extra_context = kwargs.get('extra_context', {})
+    _form_template = kwargs.get('form_template', {})
 
     class FactoryObjectMixin(object):
         """ Common properties of all views.  """
@@ -48,6 +49,8 @@ def cbv_factory(modelclass, **kwargs):
         """ Common properties of form-based views (Create, Update). """
         if _form_class:
             form_class = _form_class
+        if _form_template:
+            form_template = _form_template
 
         def get_form_kwargs(self, **kwargs):
             d = super(FactoryFormMixin, self).get_form_kwargs(**kwargs)
