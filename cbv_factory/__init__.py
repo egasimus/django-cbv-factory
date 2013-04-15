@@ -10,11 +10,10 @@ from django.views.generic.edit import ModelFormMixin
 
 
 def parse_func_dict(selfobj, d):
-    """
-    Recursively goes through a dict, calling functions that refer to a view's
-    self and therefore need to be called from within -- such as getting extra
-    kwargs for a form constructor based on request data.
-    """
+    """ Recursively goes through a dict, calling functions that refer
+        to a view's self and therefore need to be called from within --
+        such as getting extra kwargs for a form constructor based on
+        request data. """
     e = d.copy()
     for i in e.keys():
         if isfunction(e[i]):
@@ -25,10 +24,8 @@ def parse_func_dict(selfobj, d):
 
 
 def cbv_factory(modelclass, **kwargs):
-    """
-    For a given model, returns generic class-based ListView, DetailView,
-    CreateView, UpdateView, DeleteView.
-    """
+    """ For a given model, returns generic class-based ListView,
+        DetailView, CreateView, UpdateView, DeleteView. """
 
     _queryset = kwargs.get('queryset', None)
     _form_class = kwargs.get('form_class', None)
