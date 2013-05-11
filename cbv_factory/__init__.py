@@ -44,10 +44,8 @@ def cbv_factory(modelclass, **kwargs):
 
     class FactoryFormMixin(ModelFormMixin):
         """ Common properties of form-based views (Create, Update). """
-        if _form_class:
-            form_class = _form_class
-        if _form_template:
-            template_name = _form_template
+        if _form_class: form_class = _form_class
+        if _form_template: template_name = _form_template
 
         def get_form_kwargs(self, **kwargs):
             d = super(FactoryFormMixin, self).get_form_kwargs(**kwargs)
@@ -57,8 +55,7 @@ def cbv_factory(modelclass, **kwargs):
     class Detail(FactoryObjectMixin, DetailView): pass
 
     class List(FactoryObjectMixin, ListView):
-        if _queryset:
-            queryset = _queryset
+        if _queryset: queryset = _queryset
 
     class Create(FactoryFormMixin, FactoryObjectMixin, CreateView): pass
 
@@ -66,13 +63,15 @@ def cbv_factory(modelclass, **kwargs):
 
     class Delete(FactoryObjectMixin, DeleteView): pass
 
-    return {
-        'list': List,
-        'detail': Detail,
-        'create': Create,
-        'update': Update,
-        'delete': Delete
-    }
+    classes = {'list': List,
+               'detail': Detail,
+               'create': Create,
+               'update': Update,
+               'delete': Delete}
+    for c in classes.values():
+        c.__name__ = modelclass.__name__ + c.__name__
+
+    return classes
 
 
 def generate_urls(views, view_patterns):
